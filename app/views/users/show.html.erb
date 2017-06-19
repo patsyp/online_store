@@ -1,0 +1,90 @@
+<a href="/shoes">Go to All Products</a>
+<h4>Hi <%=@user.first_name%></h4>
+<h3>Sell Product</h3>
+<form action="/products" method="post">
+	<input type="hidden" name="authenticity_token" value="<%=form_authenticity_token%>">
+	<div>
+		<label>Name <input type="text" name="product[name]"></label>
+	</div>
+	<div>
+		<label>Amount <input type="number" step="0.01" min="0" name="product[amount]" placeholder="$0.00"></label>
+	</div>
+	<input type="submit" value="Sell">
+	<div class=errors>
+		<%if flash[:product_errors] %>
+			<% flash[:product_errors].each do |error| %>
+				<p><%=error%></p>
+			<% end %>
+		<% end %>
+	</div>
+</form>
+<!-- TABLE OF UNSOLD PRODUCTS -->
+<h4>Your products that are not yet sold:</h4>
+<table border="1">
+	<thead>
+		<th>Product</th>
+		<th>Date Posted</th>
+		<th>Amount</th>
+		<th>Action</th>
+	</thead>
+	<tbody>	
+<%@user_products.each do |product|%>
+	<%if @purchase_array.exclude? product.id%>
+		<tr>
+			<td><%=product.name%></td>
+			<td><%=product.created_at.strftime("%B, %d, %Y")%></td>
+			<td>$<%=product.amount%></td>
+			<td><a href="/products/<%=product.id%>" data-method='delete'>Remove</a></td>
+		</tr>
+	<%end%>
+<%end%>
+	</tbody>
+		</table>
+<!-- TABLE OF SOLD PRODUCTS -->
+<h4>Sales</h4>
+<table border="1">
+	<thead>
+		<th>Product</th>
+		<th>Date Posted</th>
+		<th>Buyer</th>
+		<th>Amount</th>
+	</thead>
+	<tbody>	
+	<%@user_products.each do |product|%>
+		<%if @purchase_array.include? product.id%>
+			<tr>
+				<td><%=product.name%></td>
+				<td><%=product.created_at.strftime("%B, %d, %Y")%></td>
+				<td><%=product.buyer.first_name%> <%=product.buyer.last_name%></td>
+				<td>$<%=product.amount%></td>
+			</tr>
+		<%end%>
+	<%end%>
+	</tbody>
+</table>
+<p>Total: $<%=@total_sales%></p>
+<!-- TABLE OF PURCHASES -->
+<h4>Purchases</h4>
+<table border="1">
+	<thead>
+		<tr>
+			<th>Product</th>
+			<th>Date Bought</th>
+			<th>Seller</th>
+			<th>Amount</th>
+		</tr>
+	</thead>
+	<tbody>
+	<%@purchases.each do |purchase|%>
+		<tr>
+			<td><%=purchase.name%></td>
+			<td><%=purchase.created_at.strftime("%B, %d, %Y")%></td>
+			<td><%=purchase.user.first_name%> <%=purchase.user.last_name%></td>
+			<td>$<%=purchase.amount%></td>
+		</tr>
+	<%end%>
+	</tbody>
+</table>
+<p>Total: $<%=@total_purchase%></p>
+
+

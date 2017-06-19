@@ -7,7 +7,9 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-
+<% if session[:user_id] %>
+	<a href="/sessions/<%=session[:user_id]%>" data-method='delete'>Logout</a>
+<%end%>
 <%= yield %>
 
 </body>

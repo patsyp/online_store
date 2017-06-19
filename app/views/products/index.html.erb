@@ -1,0 +1,33 @@
+<a href="/dashboard/<%=session[:user_id]%>">Go to Dashboard</a>
+<h4>Hi <%=@current_user.first_name%></h4>
+<h2>All Products</h2>
+<table border="1">
+	<thead>
+		<tr>
+			<th>Product</th>
+			<th>Seller</th>
+			<th>Date Posted</th>
+			<th>Amount</th>
+			<th>Action</th>
+		</tr>
+	</thead>
+	<tbody>
+	<% @products.each do |product| %>
+		<%if @purchase_array.exclude? product.id %>
+			<tr>
+				<td><%=product.name%></td>
+				<td><%=product.user.first_name%> <%=product.user.last_name%></td>
+				<td><%=product.created_at.strftime("%B, %d, %Y")%></td>
+				<td>$<%=product.amount%></td>
+				<td>
+				<%if product.user.id == session[:user_id]%>
+					<a href="/products/<%=product.id%>" data-method='delete'>Remove</a>
+					<%else%>
+					<a href="/purchases/<%=product.id%>" data-method="post">Buy</a>
+				<%end%>
+				</td>
+			</tr>
+		<%end%>
+	<%end%>
+	</tbody>
+</table>
